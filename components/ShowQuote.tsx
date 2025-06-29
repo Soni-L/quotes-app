@@ -15,6 +15,26 @@ const ShowQuote = ({ quotes }: { quotes: Quote[] }) => {
 
   return (
     <>
+      {!isOnline && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            backgroundColor: "#ff9800",
+            color: "white",
+            padding: "12px",
+            textAlign: "center",
+            fontWeight: "bold",
+            zIndex: 1000,
+          }}
+        >
+          You are offline. Connect to the internet to receive a fuller
+          compilation of quotes.
+        </div>
+      )}
+
       <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
         <p>{selectedQuote?.quote}</p>
         <p>
