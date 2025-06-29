@@ -14,9 +14,9 @@ const ShowQuote = ({ quotes }: { quotes: Quote[] }) => {
   return (
     <>
       <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-        <p>{selectedQuote.quote}</p>
+        <p>{selectedQuote?.quote}</p>
         <p>
-          <strong>"{selectedQuote.author}"</strong>
+          <strong>"{selectedQuote?.author}"</strong>
         </p>
       </div>
       <button
