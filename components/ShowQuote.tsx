@@ -35,24 +35,48 @@ const ShowQuote = ({ quotes }: { quotes: Quote[] }) => {
         </div>
       )}
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-        <p>{selectedQuote?.quote}</p>
-        <p>
-          <strong>"{selectedQuote?.author}"</strong>
-        </p>
-      </div>
-      <button
-        onClick={handleClick}
-        style={{
-          cursor: "pointer",
-          maxWidth: "200px",
-          fontSize: "14px",
-          padding: "8px",
-          margin: "10px auto",
-        }}
-      >
-        Show me another quote!
-      </button>
+      {quotes.length === 0 && (
+        <>
+          <p>Oops there has been an error, please reload the page!</p>
+          <button
+            onClick={handleClick}
+            style={{
+              cursor: "pointer",
+              maxWidth: "200px",
+              fontSize: "14px",
+              padding: "8px",
+              margin: "10px auto",
+            }}
+          >
+            Reload!
+          </button>
+        </>
+      )}
+
+      {quotes.length > 0 && (
+        <>
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "10px" }}
+          >
+            <p>{selectedQuote?.quote}</p>
+            <p>
+              <strong>"{selectedQuote?.author}"</strong>
+            </p>
+          </div>
+          <button
+            onClick={handleClick}
+            style={{
+              cursor: "pointer",
+              maxWidth: "200px",
+              fontSize: "14px",
+              padding: "8px",
+              margin: "10px auto",
+            }}
+          >
+            Show me another quote!
+          </button>
+        </>
+      )}
     </>
   );
 };

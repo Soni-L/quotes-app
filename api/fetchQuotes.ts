@@ -5,7 +5,7 @@ async function fetchQuotes() {
   ];
 
   const requests = urls.map((url) =>
-    fetch(url).then((res) => {
+    fetch(url, { next: { revalidate: 30 } }).then((res) => {
       if (!res.ok) {
         throw new Error(`Failed to fetch from ${url}: ${res.status}`);
       }
