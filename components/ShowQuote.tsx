@@ -1,13 +1,15 @@
 "use client";
 import { useState } from "react";
 import { Quote } from "../types/allTypes";
+import useOfflineCaching from "@/hooks/useOfflineCaching";
 
 const ShowQuote = ({ quotes }: { quotes: Quote[] }) => {
+  const { isOnline, cachedQuotes } = useOfflineCaching(quotes);
   const [selectedQuote, setSelectedQuote] = useState(
-    quotes[Math.floor(Math.random() * quotes.length)]
+    cachedQuotes[Math.floor(Math.random() * cachedQuotes.length)]
   );
 
-  const handleClick = () => {
+  const handleClick = async () => {
     setSelectedQuote(quotes[Math.floor(Math.random() * quotes.length)]);
   };
 
@@ -26,7 +28,7 @@ const ShowQuote = ({ quotes }: { quotes: Quote[] }) => {
           maxWidth: "200px",
           fontSize: "14px",
           padding: "8px",
-          margin: '10px auto',
+          margin: "10px auto",
         }}
       >
         Show me another quote!
