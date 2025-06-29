@@ -1,1 +1,1 @@
-export type Quote  { author: string; quote: string; id: number };
+export type Quote = { author: string; quote: string; id: number };
