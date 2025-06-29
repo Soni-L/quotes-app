@@ -1,7 +1,7 @@
 async function fetchQuotes() {
   const urls = [
     "https://zenquotes.io/api/quotes",
-    "https://dummyjson.com/quotes",
+    "https://dummyjson.com/quotes?limit=50",
   ];
 
   const requests = urls.map((url) =>
@@ -15,7 +15,7 @@ async function fetchQuotes() {
 
   try {
     const { url, data } = await Promise.any(requests);
-    if (url === "https://dummyjson.com/quotes") {
+    if (url === "https://dummyjson.com/quotes?limit=50") {
       console.log("DummyJSON won the race!");
       return data.quotes;
     }
