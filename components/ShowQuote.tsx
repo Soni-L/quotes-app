@@ -25,7 +25,8 @@ const ShowQuote = ({ quotes }: { quotes: Quote[] }) => {
           cursor: "pointer",
           maxWidth: "200px",
           fontSize: "14px",
-          padding: "5px",
+          padding: "8px",
+          margin: '10px auto',
         }}
       >
         Show me another quote!
