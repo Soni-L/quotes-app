@@ -1,13 +1,17 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Quote } from "../types/allTypes";
 import useOfflineCaching from "@/hooks/useOfflineCaching";
 
 const ShowQuote = ({ quotes }: { quotes: Quote[] }) => {
   const { isOnline, cachedQuotes } = useOfflineCaching(quotes);
-  const [selectedQuote, setSelectedQuote] = useState(
-    cachedQuotes[Math.floor(Math.random() * cachedQuotes.length)]
-  );
+  const [selectedQuote, setSelectedQuote] = useState({ quote: "", author: "" });
+
+  useEffect(() => {
+    setSelectedQuote(
+      cachedQuotes[Math.floor(Math.random() * cachedQuotes.length)]
+    );
+  }, []);
 
   const handleClick = async () => {
     setSelectedQuote(quotes[Math.floor(Math.random() * quotes.length)]);
@@ -35,24 +39,6 @@ const ShowQuote = ({ quotes }: { quotes: Quote[] }) => {
         </div>
       )}
 
-      {quotes.length === 0 && (
-        <>
-          <p>Oops there has been an error, please reload the page!</p>
-          <button
-            onClick={handleClick}
-            style={{
-              cursor: "pointer",
-              maxWidth: "200px",
-              fontSize: "14px",
-              padding: "8px",
-              margin: "10px auto",
-            }}
-          >
-            Reload!
-          </button>
-        </>
-      )}
-
       {quotes.length > 0 && (
         <>
           <div
@@ -74,6 +60,24 @@ const ShowQuote = ({ quotes }: { quotes: Quote[] }) => {
             }}
           >
             Show me another quote!
+          </button>
+        </>
+      )}
+      
+      {quotes.length === 0 && (
+        <>
+          <p>Oops there has been an error, please reload the page!</p>
+          <button
+            onClick={handleClick}
+            style={{
+              cursor: "pointer",
+              maxWidth: "200px",
+              fontSize: "14px",
+              padding: "8px",
+              margin: "10px auto",
+            }}
+          >
+            Reload!
           </button>
         </>
       )}

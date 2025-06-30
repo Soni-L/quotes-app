@@ -24,12 +24,6 @@ const useOfflineCaching = (initialQuotes: any) => {
   };
 
   useEffect(() => {
-    if (isOnline) {
-      fetchNewBatch();
-    }
-  }, [isOnline]);
-
-  useEffect(() => {
     if (!isOnline) return;
 
     const interval = setInterval(() => {
