@@ -61,7 +61,7 @@ const ShowQuote = ({ quotes }: { quotes: Quote[] }) => {
               <p
                 style={{
                   fontFamily: "cursive",
-                  fontSize: "20px",
+                  fontSize: "18px",
                   color: "#BF00FF",
                   textShadow: "0 0 5px #BF00FF, 0 0 10px #8E44AD",
                 }}
