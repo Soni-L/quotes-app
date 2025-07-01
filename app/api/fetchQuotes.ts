@@ -1,4 +1,6 @@
-async function fetchQuotes() {
+import { Quote } from "@/types/allTypes";
+
+const fetchQuotes = async (): Promise<Quote[]> => {
   const urls = [
     "https://zenquotes.io/api/quotes",
     "https://dummyjson.com/quotes?limit=50",
@@ -34,6 +36,6 @@ async function fetchQuotes() {
     console.error("All requests failed:", error);
     return [];
   }
-}
+};
 
 export default fetchQuotes;
