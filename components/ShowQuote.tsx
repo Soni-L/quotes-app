@@ -2,10 +2,18 @@
 import { useEffect, useState } from "react";
 import { Quote } from "../types/allTypes";
 import useOfflineCaching from "@/hooks/useOfflineCaching";
+import PimpedButton from "./PimpedButton";
+import usePimpedQuote from "@/hooks/usePimpedQuote";
 
 const ShowQuote = ({ quotes }: { quotes: Quote[] }) => {
   const { isOnline, cachedQuotes } = useOfflineCaching(quotes);
-  const [selectedQuote, setSelectedQuote] = useState({ quote: "", author: "" });
+  const [selectedQuote, setSelectedQuote] = useState({
+    quote: "",
+    author: "",
+    id: 0,
+  } as Quote);
+  const { pimpedQuote, getPimpedQuote, backToOriginal, loading, currentPimpMode } =
+    usePimpedQuote(selectedQuote);
 
   useEffect(() => {
     setSelectedQuote(
@@ -44,26 +52,36 @@ const ShowQuote = ({ quotes }: { quotes: Quote[] }) => {
           <div
             style={{ display: "flex", flexDirection: "column", gap: "10px" }}
           >
-            <p>{selectedQuote?.quote}</p>
+            <p>{pimpedQuote?.quote}</p>
             <p>
-              <strong>"{selectedQuote?.author}"</strong>
+              <strong>"{pimpedQuote?.author}"</strong>
             </p>
           </div>
-          <button
-            onClick={handleClick}
-            style={{
-              cursor: "pointer",
-              maxWidth: "200px",
-              fontSize: "14px",
-              padding: "8px",
-              margin: "10px auto",
-            }}
-          >
-            Show me another quote!
-          </button>
+
+          <div style={{ display: "flex", margin: "10px auto", gap: "20px" }}>
+            <button
+              onClick={handleClick}
+              style={{
+                cursor: "pointer",
+                borderRadius: "8px",
+                maxWidth: "200px",
+                fontSize: "16px",
+                padding: "10px",
+              }}
+            >
+              Show me another quote!
+            </button>
+            <PimpedButton
+              loading={loading}
+              mode={currentPimpMode === "scholarly" ? "pimped" : "scholarly"}
+              onClick={
+                currentPimpMode === "scholarly" ? getPimpedQuote : backToOriginal
+              }
+            />
+          </div>
         </>
       )}
-      
+
       {quotes.length === 0 && (
         <>
           <p>Oops there has been an error, please reload the page!</p>
