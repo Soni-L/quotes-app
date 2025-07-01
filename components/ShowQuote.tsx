@@ -4,9 +4,10 @@ import { Quote } from "../types/allTypes";
 import useOfflineCaching from "@/hooks/useOfflineCaching";
 import PimpedButton from "./PimpedButton";
 import usePimpedQuote from "@/hooks/usePimpedQuote";
+import OfflineStatusIndicator from "./OfflineStatusIndicator";
 
 const ShowQuote = ({ quotes }: { quotes: Quote[] }) => {
-  const { isOnline, cachedQuotes } = useOfflineCaching(quotes);
+  const { cachedQuotes } = useOfflineCaching(quotes);
   const [selectedQuote, setSelectedQuote] = useState({
     quote: "",
     author: "",
@@ -33,26 +34,7 @@ const ShowQuote = ({ quotes }: { quotes: Quote[] }) => {
 
   return (
     <>
-      {!isOnline && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            backgroundColor: "#ff9800",
-            color: "white",
-            padding: "12px",
-            textAlign: "center",
-            fontWeight: "bold",
-            zIndex: 1000,
-          }}
-        >
-          You are offline. Connect to the internet to receive a fuller
-          compilation of quotes.
-        </div>
-      )}
-
+      <OfflineStatusIndicator />
       {quotes.length > 0 && (
         <>
           <div

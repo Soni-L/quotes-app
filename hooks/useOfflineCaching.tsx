@@ -33,7 +33,7 @@ const useOfflineCaching = (initialQuotes: any) => {
     return () => clearInterval(interval);
   }, [isOnline]);
 
-  return { isOnline, cachedQuotes };
+  return { cachedQuotes };
 };
 
 export default useOfflineCaching;
