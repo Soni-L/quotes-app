@@ -20,9 +20,10 @@ const fetchFromPimpAI = async (quote: string): Promise<string> => {
 
     const data = await response.json();
     return data.choices[0].message.content;
-  } catch (error) {
-    console.error("Error fetching from PimpAI:", error);
-    return "";
+  } catch (error: any) {
+    const errorMessage = error?.message || "Unknown network or parsing error";
+    console.error("Network or parsing error:", errorMessage);
+    throw new Error(errorMessage);
   }
 };
 

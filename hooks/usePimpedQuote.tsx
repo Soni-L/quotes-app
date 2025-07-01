@@ -4,6 +4,7 @@ import { Quote, WritingMode } from "@/types/allTypes";
 import useNetworkStatus from "./useNetworkStatus";
 
 type PimpedQuoteState = {
+  error: string | null;
   originalQuote: Quote;
   pimpedQuote: Quote | null;
   mode: WritingMode;
@@ -13,6 +14,7 @@ const usePimpedQuote = (quote: Quote) => {
   const [loading, setLoading] = useState<boolean>(false);
   const { isOnline } = useNetworkStatus();
   const [pimpedQuoteState, setPimpedQuoteState] = useState<PimpedQuoteState>({
+    error: null,
     originalQuote: quote,
     pimpedQuote: null,
     mode: "scholarly",
@@ -24,18 +26,24 @@ const usePimpedQuote = (quote: Quote) => {
     if (pimpedQuoteState.pimpedQuote) {
       setPimpedQuoteState({
         ...pimpedQuoteState,
+        error: null,
         mode: "pimped",
       });
     } else {
       try {
         const pimpedQuote = await fetchPimpedQuote(quote.quote);
         setPimpedQuoteState({
+          error: null,
           originalQuote: { ...quote },
           pimpedQuote: { ...quote, quote: pimpedQuote },
           mode: "pimped",
         });
-      } catch (error) {
+      } catch (error : any) {
         console.error("Failed to fetch pimped quote:", error);
+        setPimpedQuoteState({
+          ...pimpedQuoteState,
+          error: "Failed to fetch pimped quote: " + error,
+        });
       }
     }
 
@@ -44,6 +52,7 @@ const usePimpedQuote = (quote: Quote) => {
 
   useEffect(() => {
     setPimpedQuoteState({
+      error: null,
       originalQuote: quote,
       pimpedQuote: null,
       mode: "scholarly",
@@ -52,6 +61,7 @@ const usePimpedQuote = (quote: Quote) => {
 
   useEffect(() => {
     setPimpedQuoteState({
+      error: null,
       originalQuote: { ...quote },
       pimpedQuote: null,
       mode: "scholarly",
@@ -60,6 +70,7 @@ const usePimpedQuote = (quote: Quote) => {
 
   return {
     loading,
+    error: pimpedQuoteState.error,
     disabled:
       !isOnline &&
       pimpedQuoteState.mode === "scholarly" &&

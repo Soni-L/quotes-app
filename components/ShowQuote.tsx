@@ -5,6 +5,7 @@ import useOfflineCaching from "@/hooks/useOfflineCaching";
 import PimpedButton from "./PimpedButton";
 import usePimpedQuote from "@/hooks/usePimpedQuote";
 import OfflineStatusIndicator from "./OfflineStatusIndicator";
+import ErrorSnackbar from "./ErrorSnackbar";
 
 const styles: { [key: string]: React.CSSProperties } = {
   quoteContainer: {
@@ -47,6 +48,7 @@ const ShowQuote = ({ quotes }: { quotes: Quote[] }) => {
     id: 0,
   } as Quote);
   const {
+    error,
     pimpedQuote,
     disabled,
     getPimpedQuote,
@@ -68,6 +70,7 @@ const ShowQuote = ({ quotes }: { quotes: Quote[] }) => {
   return (
     <>
       <OfflineStatusIndicator />
+      <ErrorSnackbar error={!!error} errorMessage={error || ""} />
       {quotes.length > 0 && (
         <>
           <div style={styles.quoteContainer}>
