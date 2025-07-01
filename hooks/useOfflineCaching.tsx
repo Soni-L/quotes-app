@@ -28,7 +28,7 @@ const useOfflineCaching = (initialQuotes: any) => {
 
     const interval = setInterval(() => {
       fetchNewBatch();
-    }, 15000);
+    }, 60000);
 
     return () => clearInterval(interval);
   }, [isOnline]);

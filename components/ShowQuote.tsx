@@ -12,8 +12,13 @@ const ShowQuote = ({ quotes }: { quotes: Quote[] }) => {
     author: "",
     id: 0,
   } as Quote);
-  const { pimpedQuote, getPimpedQuote, backToOriginal, loading, currentPimpMode } =
-    usePimpedQuote(selectedQuote);
+  const {
+    pimpedQuote,
+    getPimpedQuote,
+    backToOriginal,
+    loading,
+    currentPimpMode,
+  } = usePimpedQuote(selectedQuote);
 
   useEffect(() => {
     setSelectedQuote(
@@ -52,7 +57,20 @@ const ShowQuote = ({ quotes }: { quotes: Quote[] }) => {
           <div
             style={{ display: "flex", flexDirection: "column", gap: "10px" }}
           >
-            <p>{pimpedQuote?.quote}</p>
+            {currentPimpMode === "pimped" ? (
+              <p
+                style={{
+                  fontFamily: "cursive",
+                  fontSize: "20px",
+                  color: "#BF00FF",
+                  textShadow: "0 0 5px #BF00FF, 0 0 10px #8E44AD",
+                }}
+              >
+                {pimpedQuote?.quote}
+              </p>
+            ) : (
+              <p>{pimpedQuote?.quote}</p>
+            )}
             <p>
               <strong>"{pimpedQuote?.author}"</strong>
             </p>
@@ -75,7 +93,9 @@ const ShowQuote = ({ quotes }: { quotes: Quote[] }) => {
               loading={loading}
               mode={currentPimpMode === "scholarly" ? "pimped" : "scholarly"}
               onClick={
-                currentPimpMode === "scholarly" ? getPimpedQuote : backToOriginal
+                currentPimpMode === "scholarly"
+                  ? getPimpedQuote
+                  : backToOriginal
               }
             />
           </div>
