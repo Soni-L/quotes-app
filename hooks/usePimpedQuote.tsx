@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import fetchPimpedQuote from "@/app/api/fetchFromPimpAI";
 import { Quote } from "@/types/allTypes";
+import useNetworkStatus from "./useNetworkStatus";
 
 const usePimpedQuote = (quote: Quote) => {
   const [loading, setLoading] = useState<boolean>(false);
+  const { isOnline } = useNetworkStatus();
   const [pimpedQuoteState, setPimpedQuoteState] = useState<any>({
     originalQuote: quote,
     pimpedQuote: null,
@@ -52,6 +54,10 @@ const usePimpedQuote = (quote: Quote) => {
 
   return {
     loading,
+    disabled:
+      !isOnline &&
+      pimpedQuoteState.mode === "scholarly" &&
+      !pimpedQuoteState.pimpedQuote,
     currentPimpMode: pimpedQuoteState.mode,
     pimpedQuote:
       pimpedQuoteState.mode === "scholarly"

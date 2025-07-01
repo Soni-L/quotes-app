@@ -1,10 +1,13 @@
+import React from "react";
+
 type Mode = "pimped" | "scholarly";
 
 const PimpedButton: React.FC<{
   onClick?: () => void;
   loading?: boolean;
   mode?: Mode;
-}> = ({ onClick, loading = false, mode = "pimped" }) => {
+  disabled?: boolean;
+}> = ({ onClick, loading = false, mode = "pimped", disabled = false }) => {
   const isPimped = mode === "pimped";
 
   const buttonStyle: React.CSSProperties = isPimped
@@ -42,6 +45,15 @@ const PimpedButton: React.FC<{
         transition: "background-color 0.3s ease",
         opacity: loading ? 0.5 : 1,
       };
+
+  if (disabled) {
+    Object.assign(buttonStyle, {
+      opacity: 0.4,
+      cursor: "auto",
+      boxShadow: "none",
+      filter: "grayscale(70%)",
+    });
+  }
 
   const spinnerStyle: React.CSSProperties = {
     border: "2px solid rgba(0,0,0,0.1)",
@@ -89,18 +101,18 @@ const PimpedButton: React.FC<{
       `}</style>
 
       <button
-        onClick={!loading ? onClick : undefined}
+        onClick={!loading && !disabled ? onClick : undefined}
         style={buttonStyle}
-        disabled={loading}
+        disabled={loading || disabled}
         onMouseEnter={(e) => {
-          if (!loading && isPimped) {
+          if (!loading && !disabled && isPimped) {
             e.currentTarget.style.transform = "scale(1.05)";
             e.currentTarget.style.boxShadow =
               "0 0 20px #ffd700aa, 0 0 40px #ffa50088";
           }
         }}
         onMouseLeave={(e) => {
-          if (!loading && isPimped) {
+          if (!loading && !disabled && isPimped) {
             e.currentTarget.style.transform = "scale(1)";
             e.currentTarget.style.boxShadow =
               "0 0 15px #ffd70088, 0 0 30px #ffa50066";

@@ -14,6 +14,7 @@ const ShowQuote = ({ quotes }: { quotes: Quote[] }) => {
   } as Quote);
   const {
     pimpedQuote,
+    disabled,
     getPimpedQuote,
     backToOriginal,
     loading,
@@ -61,7 +62,7 @@ const ShowQuote = ({ quotes }: { quotes: Quote[] }) => {
               <p
                 style={{
                   fontFamily: "cursive",
-                  fontSize: "18px",
+                  fontSize: "19px",
                   color: "#BF00FF",
                   textShadow: "0 0 5px #BF00FF, 0 0 10px #8E44AD",
                 }}
@@ -91,6 +92,7 @@ const ShowQuote = ({ quotes }: { quotes: Quote[] }) => {
             </button>
             <PimpedButton
               loading={loading}
+              disabled={disabled}
               mode={currentPimpMode === "scholarly" ? "pimped" : "scholarly"}
               onClick={
                 currentPimpMode === "scholarly"
