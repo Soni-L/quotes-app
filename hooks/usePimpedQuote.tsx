@@ -42,7 +42,7 @@ const usePimpedQuote = (quote: Quote) => {
         console.error("Failed to fetch pimped quote:", error);
         setPimpedQuoteState({
           ...pimpedQuoteState,
-          error: "Failed to fetch pimped quote: " + error,
+          error: "" + error,
         });
       }
     }
