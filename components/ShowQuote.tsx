@@ -51,10 +51,9 @@ const ShowQuote = ({ quotes }: { quotes: Quote[] }) => {
     error,
     pimpedQuote,
     disabled,
-    getPimpedQuote,
-    backToOriginal,
     loading,
     currentPimpMode,
+    togglePimping,
   } = usePimpedQuote(selectedQuote);
 
   useEffect(() => {
@@ -71,7 +70,17 @@ const ShowQuote = ({ quotes }: { quotes: Quote[] }) => {
     <>
       <OfflineStatusIndicator />
       <ErrorSnackbar error={!!error} errorMessage={error || ""} />
-      {quotes.length > 0 && (
+
+      {quotes.length === 0 && (
+        <>
+          <p>Oops there has been an error, please reload the page!</p>
+          <button onClick={handleClick} style={styles.reloadButton}>
+            Reload!
+          </button>
+        </>
+      )}
+
+      {pimpedQuote?.quote && (
         <>
           <div style={styles.quoteContainer}>
             {currentPimpMode === "pimped" ? (
@@ -92,22 +101,9 @@ const ShowQuote = ({ quotes }: { quotes: Quote[] }) => {
               loading={loading}
               disabled={disabled}
               mode={currentPimpMode === "scholarly" ? "pimped" : "scholarly"}
-              onClick={
-                currentPimpMode === "scholarly"
-                  ? getPimpedQuote
-                  : backToOriginal
-              }
+              onClick={togglePimping}
             />
           </div>
-        </>
-      )}
-
-      {quotes.length === 0 && (
-        <>
-          <p>Oops there has been an error, please reload the page!</p>
-          <button onClick={handleClick} style={styles.reloadButton}>
-            Reload!
-          </button>
         </>
       )}
     </>

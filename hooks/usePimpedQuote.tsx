@@ -38,7 +38,7 @@ const usePimpedQuote = (quote: Quote) => {
           pimpedQuote: { ...quote, quote: pimpedQuote },
           mode: "pimped",
         });
-      } catch (error : any) {
+      } catch (error: any) {
         console.error("Failed to fetch pimped quote:", error);
         setPimpedQuoteState({
           ...pimpedQuoteState,
@@ -80,13 +80,15 @@ const usePimpedQuote = (quote: Quote) => {
       pimpedQuoteState.mode === "scholarly"
         ? pimpedQuoteState.originalQuote
         : pimpedQuoteState.pimpedQuote,
-    getPimpedQuote,
-    backToOriginal: () => {
-      setPimpedQuoteState({
-        ...pimpedQuoteState,
-        mode: "scholarly",
-      });
-    },
+    togglePimping:
+      pimpedQuoteState.mode === "scholarly"
+        ? getPimpedQuote
+        : () => {
+            setPimpedQuoteState({
+              ...pimpedQuoteState,
+              mode: "scholarly",
+            });
+          },
   };
 };
 
