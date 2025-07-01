@@ -1,11 +1,10 @@
 import React from "react";
-
-type Mode = "pimped" | "scholarly";
+import { WritingMode } from "../types/allTypes";
 
 const PimpedButton: React.FC<{
   onClick?: () => void;
   loading?: boolean;
-  mode?: Mode;
+  mode?: WritingMode;
   disabled?: boolean;
 }> = ({ onClick, loading = false, mode = "pimped", disabled = false }) => {
   const isPimped = mode === "pimped";

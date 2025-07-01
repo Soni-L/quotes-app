@@ -1,12 +1,18 @@
 import { useEffect, useState } from "react";
 import fetchPimpedQuote from "@/app/api/fetchFromPimpAI";
-import { Quote } from "@/types/allTypes";
+import { Quote, WritingMode } from "@/types/allTypes";
 import useNetworkStatus from "./useNetworkStatus";
+
+type PimpedQuoteState = {
+  originalQuote: Quote;
+  pimpedQuote: Quote | null;
+  mode: WritingMode;
+};
 
 const usePimpedQuote = (quote: Quote) => {
   const [loading, setLoading] = useState<boolean>(false);
   const { isOnline } = useNetworkStatus();
-  const [pimpedQuoteState, setPimpedQuoteState] = useState<any>({
+  const [pimpedQuoteState, setPimpedQuoteState] = useState<PimpedQuoteState>({
     originalQuote: quote,
     pimpedQuote: null,
     mode: "scholarly",
