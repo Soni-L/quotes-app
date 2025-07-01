@@ -1,7 +1,7 @@
 import { useLocalStorage } from "usehooks-ts";
 import useNetworkStatus from "./useNetworkStatus";
 import { useEffect, useState } from "react";
-import fetchQuotes from "@/api/fetchQuotes";
+import fetchQuotes from "@/app/api/fetchQuotes";
 
 const useOfflineCaching = (initialQuotes: any) => {
   const [cachedQuotes, setCachedQuotes] = useLocalStorage<any>(

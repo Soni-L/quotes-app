@@ -1,4 +1,4 @@
-import fetchQuotes from "@/api/fetchQuotes";
+import fetchQuotes from "./api/fetchQuotes";
 import styles from "./page.module.css";
 import ShowQuote from "@/components/ShowQuote";
 
