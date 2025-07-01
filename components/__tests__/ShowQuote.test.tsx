@@ -2,81 +2,131 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import ShowQuote from "../ShowQuote";
 import { Quote } from "../../types/allTypes";
 import * as useOfflineCachingModule from "@/hooks/useOfflineCaching";
+import * as usePimpedQuoteModule from "@/hooks/usePimpedQuote";
+import OfflineStatusIndicator from "../OfflineStatusIndicator";
 
-jest.mock("@/hooks/useOfflineCaching", () => ({
-  __esModule: true,
-  default: jest.fn(),
-}));
+// Mock both custom hooks and subcomponents
+jest.mock("@/hooks/useOfflineCaching");
+jest.mock("@/hooks/usePimpedQuote");
+jest.mock("../OfflineStatusIndicator", () => () => (
+  <div data-testid="offline-status">OfflineStatusIndicator</div>
+));
+jest.mock("../PimpedButton", () => (props: any) => (
+  <button
+    onClick={props.onClick}
+    disabled={props.disabled}
+    data-testid="pimped-button"
+  >
+    {props.mode === "pimped" ? "Keep it scholarly" : "Pimp it up"}
+  </button>
+));
 
 const mockQuotes: Quote[] = [
-  { id: 1, quote: "First quote", author: "Author A" },
-  { id: 2, quote: "Second quote", author: "Author B" },
+  { id: 1, quote: "Life is good", author: "Author A" },
+  { id: 2, quote: "Code like it's 1999", author: "Author B" },
 ];
 
-describe("ShowQuote component", () => {
+describe("ShowQuote", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it("shows offline banner when offline", () => {
+  const mockUseOfflineCaching = (quotes = mockQuotes) => {
     (useOfflineCachingModule.default as jest.Mock).mockReturnValue({
-      isOnline: false,
-      cachedQuotes: mockQuotes,
+      cachedQuotes: quotes,
+    });
+  };
+
+  const mockUsePimpedQuote = (mode: "scholarly" | "pimped" = "scholarly") => {
+    (usePimpedQuoteModule.default as jest.Mock).mockReturnValue({
+      loading: false,
+      disabled: false,
+      currentPimpMode: mode,
+      pimpedQuote:
+        mode === "pimped"
+          ? { id: 1, quote: "Pimped version", author: "Author A" }
+          : { id: 1, quote: "Life is good", author: "Author A" },
+      getPimpedQuote: jest.fn(),
+      backToOriginal: jest.fn(),
+    });
+  };
+
+  it("renders the quote and author in scholarly mode", () => {
+    mockUseOfflineCaching();
+    mockUsePimpedQuote("scholarly");
+
+    render(<ShowQuote quotes={mockQuotes} />);
+    expect(screen.getByText("Life is good")).toBeInTheDocument();
+    expect(screen.getByText(/"Author A"/)).toBeInTheDocument();
+    expect(screen.getByTestId("offline-status")).toBeInTheDocument();
+  });
+
+  it("renders the pimped quote in pimped mode", () => {
+    mockUseOfflineCaching();
+    mockUsePimpedQuote("pimped");
+
+    render(<ShowQuote quotes={mockQuotes} />);
+    expect(screen.getByText("Pimped version")).toBeInTheDocument();
+    expect(screen.getByText(/"Author A"/)).toBeInTheDocument();
+  });
+
+  it("calls backToOriginal when in pimped mode and button is clicked", () => {
+    mockUseOfflineCaching();
+    const backToOriginal = jest.fn();
+    (usePimpedQuoteModule.default as jest.Mock).mockReturnValue({
+      loading: false,
+      disabled: false,
+      currentPimpMode: "pimped",
+      pimpedQuote: { id: 1, quote: "Pimped version", author: "Author A" },
+      getPimpedQuote: jest.fn(),
+      backToOriginal,
     });
 
     render(<ShowQuote quotes={mockQuotes} />);
-    expect(screen.getByText(/You are offline/i)).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId("pimped-button"));
+    expect(backToOriginal).toHaveBeenCalled();
   });
 
-  it("shows quote and author from cachedQuotes", () => {
-    (useOfflineCachingModule.default as jest.Mock).mockReturnValue({
-      isOnline: true,
-      cachedQuotes: mockQuotes,
+  it("calls getPimpedQuote when in scholarly mode and button is clicked", () => {
+    mockUseOfflineCaching();
+    const getPimpedQuote = jest.fn();
+    (usePimpedQuoteModule.default as jest.Mock).mockReturnValue({
+      loading: false,
+      disabled: false,
+      currentPimpMode: "scholarly",
+      pimpedQuote: { id: 1, quote: "Life is good", author: "Author A" },
+      getPimpedQuote,
+      backToOriginal: jest.fn(),
     });
 
     render(<ShowQuote quotes={mockQuotes} />);
-    expect(screen.getByText(/quote/i)).toBeInTheDocument(); // Could be random
+    fireEvent.click(screen.getByTestId("pimped-button"));
+    expect(getPimpedQuote).toHaveBeenCalled();
   });
 
-  it("changes quote when button is clicked", () => {
-    (useOfflineCachingModule.default as jest.Mock).mockReturnValue({
-      isOnline: true,
-      cachedQuotes: mockQuotes,
-    });
-
-    render(<ShowQuote quotes={mockQuotes} />);
-    const button = screen.getByRole("button", { name: /show me another/i });
-
-    const initialQuote = screen.getByText(/quote/i).textContent;
-    fireEvent.click(button);
-    const updatedQuote = screen.getByText(/quote/i).textContent;
-
-    // Might still be same quote (random), so just ensure text is rendered
-    expect(button).toBeInTheDocument();
-    expect(updatedQuote).toBeTruthy();
-  });
-
-  it("shows error when quotes are empty", () => {
-    (useOfflineCachingModule.default as jest.Mock).mockReturnValue({
-      isOnline: true,
-      cachedQuotes: [],
-    });
+  it("renders fallback UI when quotes array is empty", () => {
+    mockUseOfflineCaching([]);
+    mockUsePimpedQuote();
 
     render(<ShowQuote quotes={[]} />);
     expect(
-      screen.getByText(/oops there has been an error/i)
+      screen.getByText(/Oops there has been an error/i)
     ).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /reload/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Reload/i })).toBeInTheDocument();
   });
 
-  it("renders without crashing with one quote", () => {
-    (useOfflineCachingModule.default as jest.Mock).mockReturnValue({
-      isOnline: true,
-      cachedQuotes: [mockQuotes[0]],
-    });
+  it("changes quote on 'Show me another quote!' button click", () => {
+    mockUseOfflineCaching();
+    mockUsePimpedQuote();
 
-    render(<ShowQuote quotes={[mockQuotes[0]]} />);
-    expect(screen.getByText(mockQuotes[0].quote)).toBeInTheDocument();
-    expect(screen.getByText(`"${mockQuotes[0].author}"`)).toBeInTheDocument();
+    render(<ShowQuote quotes={mockQuotes} />);
+    const quoteBefore = screen.getByText(/Life is good|Code like/i).textContent;
+    const button = screen.getByText(/Show me another quote/i);
+    fireEvent.click(button);
+    const quoteAfter = screen.getByText(/Life is good|Code like/i).textContent;
+
+    // Might still match the same quote, so just ensure the handler doesn't break rendering
+    expect(button).toBeInTheDocument();
+    expect(quoteAfter).toBeTruthy();
   });
 });
